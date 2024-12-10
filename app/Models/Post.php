@@ -12,7 +12,10 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = [
+        'title',
+        'content'
+    ];
 
     public static function searchableAs(): string
     {
@@ -21,34 +24,34 @@ class Post extends Model
 
     public function toSearchableArray(): array
     {
-//        $post = $this->toArray();
-
         return [
-            'text' => $this->text,
+            'title' => $this->title,
+            'content' => $this->content,
+            'created_at' => $this->created_at->toDateTimeString(),
+            'tags' => $this->tags->pluck('name')->toArray(),
         ];
-//        $user = $this->user ? $this->user->only(['id', 'name', 'email']) : null;
-//
-//        return array_merge($post, [
-//            'user' => $user,
-//        ]);
     }
 
-    public function meta(): HasOne
+    public
+    function meta(): HasOne
     {
         return $this->hasOne(PostMeta::class);
     }
 
-    public function comments(): HasMany
+    public
+    function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function tags(): BelongsToMany
+    public
+    function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tag');
     }
 
-    public static function mapping(): array
+    public
+    static function mapping(): array
     {
         // пример
         return [
@@ -57,11 +60,11 @@ class Post extends Model
                     'enabled' => true
                 ],
                 'properties' => [
-                    'first_name' => [
+                    'title' => [
                         'type' => 'keyword'
                     ],
-                    'age' => [
-                        'type' => 'integer'
+                    'content' => [
+                        'type' => 'keyword'
                     ]
                 ]
             ]

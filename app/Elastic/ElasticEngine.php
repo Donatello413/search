@@ -58,13 +58,14 @@ class ElasticEngine
     /**
      * @throws Throwable
      */
-    public function bulkAddDocuments(string $indexName, array $documents): array
+    public function createDocuments(string $indexName, array $documents): array
     {
         $params = ['body' => []];
 
         foreach ($documents as $document) {
             // Метаинформация.
-            // Указывает, что делать (например, index, update, или delete) и дополнительные параметры (_index, _id и т. д.).
+            // Указывает, что делать (например, index(создание/обновление), create, update, или delete) и дополнительные параметры (_index, _id и т. д.).
+            // index полностью перезаписывает документ
             $params['body'][] = [
                 'index' => [
                     '_index' => $indexName,             // Указываем, что документ должен быть добавлен в индекс, например posts_index
@@ -78,5 +79,48 @@ class ElasticEngine
         }
 
         return $this->client->bulk($params)->asArray();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function updateDocument(string $indexName, int $documentId, array $documentData): array
+    {
+        $params = [
+            'index' => $indexName,
+            'id' => $documentId,
+            'body' => [
+                'doc' => $documentData,
+            ],
+        ];
+
+        return $this->client->update($params)->asArray();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function createDocument(string $indexName, int $documentId, array $documentData): array
+    {
+        $params = [
+            'index' => $indexName,
+            'id' => $documentId,
+            'body' => $documentData
+        ];
+
+        return $this->client->create($params)->asArray();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function deleteDocument(string $indexName, int $documentId,): array
+    {
+        $params = [
+            'index' => $indexName,
+            'id' => $documentId,
+        ];
+
+        return $this->client->delete($params)->asArray();
     }
 }

@@ -54,7 +54,7 @@ class ElasticPushDataCommand extends Command
                     'data' => $record->toSearchableArray(),
                 ])->toArray();
 
-                $engine->bulkAddDocuments($indexName, $documents);
+                $engine->createDocuments($indexName, $documents);
 
                 $this->components->info("Successfully pushed data for model {$model}.");
             }

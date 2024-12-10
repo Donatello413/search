@@ -25,6 +25,7 @@ class Post extends Model
     public function toSearchableArray(): array
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'created_at' => $this->created_at->toDateTimeString(),

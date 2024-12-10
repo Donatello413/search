@@ -11,7 +11,7 @@ use Throwable;
 
 class ElasticPushDataCommand extends Command
 {
-    protected $signature = 'app:elastic-push-data';
+    protected $signature = 'elastic:push';
 
     protected $description = 'Push data from models to Elasticsearch';
 

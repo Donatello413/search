@@ -33,26 +33,22 @@ class Post extends Model
         ];
     }
 
-    public
-    function meta(): HasOne
+    public function meta(): HasOne
     {
         return $this->hasOne(PostMeta::class);
     }
 
-    public
-    function comments(): HasMany
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public
-    function tags(): BelongsToMany
+    public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tag');
     }
 
-    public
-    static function mapping(): array
+    public static function mapping(): array
     {
         // пример
         return [

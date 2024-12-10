@@ -9,7 +9,7 @@ use Throwable;
 
 class ElasticIndexCommand extends Command
 {
-    protected $signature = 'app:elastic-index-command';
+    protected $signature = 'elastic:index';
 
     protected $description = '';
 

@@ -50,7 +50,7 @@ class ElasticEngine
     /**
      * @throws Throwable
      */
-    public function deleteIndex($indexName): array
+    public function deleteIndex(string $indexName): array
     {
         return $this->client->indices()->delete(['index' => $indexName])->asArray();
     }
@@ -122,5 +122,22 @@ class ElasticEngine
         ];
 
         return $this->client->delete($params)->asArray();
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function clearIndex(string $indexName): array
+    {
+        $params = [
+            'index' => $indexName,
+            'body' => [
+                'query' => [
+                    'match_all' => new \stdClass(),
+                ],
+            ],
+        ];
+
+        return $this->client->deleteByQuery($params)->asArray();
     }
 }

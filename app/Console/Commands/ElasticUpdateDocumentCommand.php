@@ -19,8 +19,8 @@ class ElasticUpdateDocumentCommand extends Command
     public function handle(): void
     {
         $post = Post::find(1);
-        $post->title = 'Hello world';
-//        $post->title = 'Enim voluptatem id culpa rerum nisi qui.';
+//        $post->title = 'Hello world';
+        $post->title = 'Enim voluptatem id culpa rerum nisi qui.';
         $post->save();
 
         dump($post->toArray());

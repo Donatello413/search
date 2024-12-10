@@ -140,4 +140,19 @@ class ElasticEngine
 
         return $this->client->deleteByQuery($params)->asArray();
     }
+
+    /**
+     * @throws Throwable
+     */
+    public function searchDocuments(string $indexName, array $query): array
+    {
+        $params = [
+            'index' => $indexName,
+            'body' => [
+                'query' => $query,
+            ],
+        ];
+
+        return $this->client->search($params)->asArray();
+    }
 }

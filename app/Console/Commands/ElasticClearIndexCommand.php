@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Elastic\ElasticEngine;
+use App\Elastic\ElasticEngineNew;
 use App\Models\Post;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -19,12 +20,8 @@ class ElasticClearIndexCommand extends Command
      */
     public function handle(): void
     {
-        $engine = new ElasticEngine(app('elasticsearch'));
-        $model = Post::class;
-
-        $indexName = $model::searchableAs();
-
-        $response = $engine->clearIndex($indexName);
+        $engine = new ElasticEngineNew(app('elasticsearch'));
+        $response = $engine->clearIndex(new Post);
 
         dd($response);
     }

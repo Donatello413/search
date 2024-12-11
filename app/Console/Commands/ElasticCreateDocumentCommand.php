@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Elastic\ElasticEngine;
+use App\Elastic\ElasticEngineNew;
 use App\Models\Post;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Model;
 use Throwable;
 
 class ElasticCreateDocumentCommand extends Command
@@ -21,22 +20,14 @@ class ElasticCreateDocumentCommand extends Command
     {
         $post = new Post(
             [
-                'title' => 'test1',
-                'content' => 'test2',
+                'title' => 'test11',
+                'content' => 'test22',
             ]
         );
         $post->save();
 
-        dump($post->toArray());
-
-        $engine = new ElasticEngine(app('elasticsearch'));
-        $model = Post::class;
-
-        $indexName = $model::searchableAs();
-        $documentId = $post->id;
-        $documentData = $post->toSearchableArray();
-
-        $response = $engine->createDocument($indexName, $documentId, $documentData);
+        $engine = new ElasticEngineNew(app('elasticsearch'));
+        $response = $engine->createDocument($post);
 
         dd($response);
     }

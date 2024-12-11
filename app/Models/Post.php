@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Elastic\SearchInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Post extends Model
+class Post extends Model implements SearchInterface
 {
     use HasFactory;
 
@@ -20,6 +21,26 @@ class Post extends Model
     public static function searchableAs(): string
     {
         return 'posts_index';
+    }
+
+    public static function mapping(): array
+    {
+        // пример
+        return [
+            'mappings' => [
+                '_source' => [
+                    'enabled' => true
+                ],
+                'properties' => [
+                    'title' => [
+                        'type' => 'keyword'
+                    ],
+                    'content' => [
+                        'type' => 'keyword'
+                    ]
+                ]
+            ]
+        ];
     }
 
     public function toSearchableArray(): array
@@ -46,25 +67,5 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tag');
-    }
-
-    public static function mapping(): array
-    {
-        // пример
-        return [
-            'mappings' => [
-                '_source' => [
-                    'enabled' => true
-                ],
-                'properties' => [
-                    'title' => [
-                        'type' => 'keyword'
-                    ],
-                    'content' => [
-                        'type' => 'keyword'
-                    ]
-                ]
-            ]
-        ];
     }
 }

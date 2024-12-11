@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Elastic\ElasticEngine;
+use App\Elastic\ElasticEngineNew;
 use App\Models\Post;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -19,18 +20,11 @@ class ElasticDeleteDocumentCommand extends Command
      */
     public function handle(): void
     {
-        $post = Post::query()->where('title', 'test1')->first();
+        $post = Post::query()->where('title', 'test11')->firstOrFail();
         $post->delete();
 
-        dump($post->toArray());
-
-        $engine = new ElasticEngine(app('elasticsearch'));
-        $model = Post::class;
-
-        $indexName = $model::searchableAs();
-        $documentId = $post->id;
-
-        $response = $engine->deleteDocument($indexName, $documentId);
+        $engine = new ElasticEngineNew(app('elasticsearch'));
+        $response = $engine->deleteDocument($post);
 
         dd($response);
     }

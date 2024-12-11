@@ -31,6 +31,7 @@ class SearchController extends Controller
 
         $engine = new ElasticEngine(app('elasticsearch'));
         $results = $engine->searchDocuments($indexName, $searchBody);
+        dd($results);
 
         return response()->json([
             'success' => true,

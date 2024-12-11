@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Elastic\ElasticEngine;
+use App\Elastic\ElasticEngineNew;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -21,19 +21,14 @@ class ElasticPushDataCommand extends Command
     public function handle(): void
     {
         try {
-            $engine = new ElasticEngine(app('elasticsearch'));
+            $engine = new ElasticEngineNew(app('elasticsearch'));
             $models = config('scout.models');
 
             /** @var Model $model */
             foreach ($models as $model) {
-                if (!class_exists($model)) {
-                    throw new \DomainException("Model {$model} not found");
-                }
+                if (!$engine->existsIndex($model)) {
+                    $this->components->error("Index {$model::searchableAs()} does not exist.");
 
-                $indexName = $model::searchableAs();
-
-                if (!$engine->existsIndex($indexName)) {
-                    $this->components->error("Index {$indexName} does not exist. Create it first!");
                     continue;
                 }
 
@@ -42,19 +37,11 @@ class ElasticPushDataCommand extends Command
 
                 if ($records->isEmpty()) {
                     $this->components->warn("No data found for model {$model}.");
+
                     continue;
                 }
 
-                /** @var Model $record */
-                $documents = $records->map(fn($record) => [
-                    'index' => [
-                        '_index' => $indexName,
-                        '_id' => $record->id,
-                    ],
-                    'data' => $record->toSearchableArray(),
-                ])->toArray();
-
-                $engine->createDocuments($indexName, $documents);
+                $engine->createDocuments($model, $records);
 
                 $this->components->info("Successfully pushed data for model {$model}.");
             }

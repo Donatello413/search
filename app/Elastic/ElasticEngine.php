@@ -144,15 +144,32 @@ class ElasticEngine
     /**
      * @throws Throwable
      */
-    public function searchDocuments(string $indexName, array $query): array
+    public function searchDocuments(string $indexName, array $searchBody): array
     {
-        $params = [
+        $response = $this->client->search([
             'index' => $indexName,
-            'body' => [
-                'query' => $query,
-            ],
-        ];
+            'body'  => $searchBody,
+        ]);
 
-        return $this->client->search($params)->asArray();
+        return $response->asArray();
     }
+
+    /**
+     * @throws Throwable
+     */
+    public function getAllDocuments(string $indexName): array
+    {
+        $response = $this->client->search([
+            'index' => $indexName,
+            'body'  => [
+                'query' => [
+                    'match_all' => new \stdClass(),
+                ],
+            ],
+        ]);
+
+        return $response->asArray();
+    }
+
+
 }

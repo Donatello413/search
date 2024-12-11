@@ -14,4 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/search', [SearchController::class, 'search']);
+Route::post('/search', [SearchController::class, 'searchPosts']);
+Route::post('/posts', [SearchController::class, 'getAllDocuments']);

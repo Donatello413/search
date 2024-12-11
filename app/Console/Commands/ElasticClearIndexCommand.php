@@ -2,11 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Elastic\ElasticEngine;
 use App\Elastic\ElasticEngineNew;
 use App\Models\Post;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Model;
 use Throwable;
 
 class ElasticClearIndexCommand extends Command

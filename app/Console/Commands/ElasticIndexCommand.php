@@ -19,16 +19,18 @@ class ElasticIndexCommand extends Command
     public function handle(): void
     {
         try {
-            $engine = new ElasticEngineNew(app('elasticsearch'));   // создали подключение и клиент для работы с эластиком
-            $models = config('scout.models');                       // модели у которых есть поиск
+            $engine = new ElasticEngineNew(app('elasticsearch'));
+            $models = config('scout.models');
 
             foreach ($models as $model) {
-                if ($engine->existsIndex($model)) {
-                    $engine->deleteIndex($model);
+                $modelInstance = new $model;
+
+                if ($engine->existsIndex($modelInstance)) {
+                    $engine->deleteIndex($modelInstance);
                 }
 
-                if (!$engine->existsIndex($model)) {
-                    $engine->createIndex($model);
+                if (!$engine->existsIndex($modelInstance)) {
+                    $engine->createIndex($modelInstance);
                 }
 
                 $this->components->info('Successfully');

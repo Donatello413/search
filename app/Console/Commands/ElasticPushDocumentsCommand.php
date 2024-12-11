@@ -5,15 +5,14 @@ namespace App\Console\Commands;
 use App\Elastic\ElasticEngineNew;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class ElasticPushDataCommand extends Command
+class ElasticPushDocumentsCommand extends Command
 {
     protected $signature = 'elastic:push';
 
-    protected $description = 'Push data from models to Elasticsearch';
+    protected $description = '';
 
     /**
      * @throws Throwable
@@ -24,11 +23,11 @@ class ElasticPushDataCommand extends Command
             $engine = new ElasticEngineNew(app('elasticsearch'));
             $models = config('scout.models');
 
-            /** @var Model $model */
             foreach ($models as $model) {
-                if (!$engine->existsIndex($model)) {
-                    $this->components->error("Index {$model::searchableAs()} does not exist.");
+                $modelInstance = new $model;
 
+                if (!$engine->existsIndex($modelInstance)) {
+                    $this->components->error("Index {$model::searchableAs()} does not exist.");
                     continue;
                 }
 
@@ -37,13 +36,12 @@ class ElasticPushDataCommand extends Command
 
                 if ($records->isEmpty()) {
                     $this->components->warn("No data found for model {$model}.");
-
                     continue;
                 }
 
-                $engine->createDocuments($model, $records);
+                $engine->createDocuments($modelInstance, $records);
 
-                $this->components->info("Successfully pushed data for model {$model}.");
+                $this->components->info('Successfully');
             }
         } catch (Throwable $e) {
             Log::channel('elastic')->error($e->getMessage());

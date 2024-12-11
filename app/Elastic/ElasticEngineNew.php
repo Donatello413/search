@@ -20,8 +20,10 @@ class ElasticEngineNew
      */
     public function createIndex(Model $model): array
     {
-        if (!class_exists($model)) {
-            throw new \DomainException("Model {$model} not found");
+        $modelClass = get_class($model);
+
+        if (!class_exists($modelClass)) {
+            throw new \DomainException("Model {$modelClass} not found");
         }
 
         if (!$model instanceof SearchInterface) {
@@ -61,9 +63,10 @@ class ElasticEngineNew
      */
     public function existsIndex(Model $model): bool
     {
+        $modelClass = get_class($model);
 
-        if (!class_exists($model)) {
-            throw new \DomainException("Model {$model} not found");
+        if (!class_exists($modelClass)) {
+            throw new \DomainException("Model {$modelClass} not found");
         }
 
         if (!$model instanceof SearchInterface) {
@@ -81,8 +84,10 @@ class ElasticEngineNew
      */
     public function deleteIndex(Model $model): array
     {
-        if (!class_exists($model)) {
-            throw new \DomainException("Model {$model} not found");
+        $modelClass = get_class($model);
+
+        if (!class_exists($modelClass)) {
+            throw new \DomainException("Model {$modelClass} not found");
         }
 
         if (!$model instanceof SearchInterface) {
@@ -100,8 +105,10 @@ class ElasticEngineNew
      */
     public function createDocuments(Model $model, Collection $records): array
     {
-        if (!class_exists($model)) {
-            throw new \DomainException("Model {$model} not found");
+        $modelClass = get_class($model);
+
+        if (!class_exists($modelClass)) {
+            throw new \DomainException("Model {$modelClass} not found");
         }
 
         if (!$model instanceof SearchInterface) {
@@ -275,7 +282,7 @@ class ElasticEngineNew
     {
         $response = $this->client->search([
             'index' => $indexName,
-            'body'  => $searchBody,
+            'body' => $searchBody,
         ]);
 
         return $response->asArray();
@@ -288,7 +295,7 @@ class ElasticEngineNew
     {
         $response = $this->client->search([
             'index' => $indexName,
-            'body'  => [
+            'body' => [
                 'query' => [
                     'match_all' => new \stdClass(),
                 ],
